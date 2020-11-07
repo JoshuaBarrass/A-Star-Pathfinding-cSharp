@@ -1,9 +1,9 @@
 # A-Star-Pathfinding-cSharp
 
 Current System: 
-  Uses a static List<string> to represent the map
-  Uses Custom Node class for when looping through the map
-  Uses Custom Vector class for storing location of each Node
+ - Uses a static List<string> to represent the map
+ - Uses Custom Node class for when looping through the map
+ - Uses Custom Vector class for storing location of each Node
 
 
 Plans:
