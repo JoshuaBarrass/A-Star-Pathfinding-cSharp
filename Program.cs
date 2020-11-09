@@ -66,6 +66,9 @@ namespace A_Star
 
         static void Main(string[] args)
         {
+            Random r = new Random();
+
+            bool Visual;
 
             List<string> map = new List<string>
             {
@@ -78,10 +81,77 @@ namespace A_Star
                 "        |           "
             };
 
+            Console.Write("Enable Visualisation? (true or false) :> ");
+            Visual = bool.Parse(Console.ReadLine());
+
+            DateTime Initial = DateTime.Now;
+
+            /*
+            Console.Write("Map Height :> "); int MapHeight = int.Parse(Console.ReadLine());
+            Console.WriteLine("Map Must have An A (Start) on a Row And a B (Goal) on Another, \na Blank Space is fine and anything else will be taken as a wall,");
+            Console.WriteLine("Every Row MUST be the same length");
+
+            for (int i = 0; i < MapHeight; i++)
+            {
+                Console.Write($"Row {i + 1} :> ");
+                if (i < map.Count - 1)
+                    map[i] = Console.ReadLine();
+                else
+                    map.Add(Console.ReadLine());
+            }
+
+            while (map.Count > MapHeight)
+            {
+                map.RemoveAt(map.Count - 1);
+            }
+            */
+
+            int Size = r.Next(5, 30);
+            bool a = false;
+            bool b = false;
+            char[] possiblechar = new char[5] { ' ', '|', ' ', '|', 'A' };
+            char[] possiblecharB = new char[5] { ' ', '|', ' ', '|',  'B' };
+
+            for (int x = 0; x < Size; x++)
+            {
+                List<char> Line = new List<char>();
+                for (int y = 0; y < Size; y++)
+                {
+                    if (a && !b && x > Size /2)
+                    {
+                        char Choice = possiblecharB[Math.Abs(r.Next(0, 50)/10)];
+                        if (Choice == 'B') b = true;
+                        Line.Add(Choice);
+
+                    }
+                    else if (!a)
+                    {
+                        char Choice = possiblechar[Math.Abs(r.Next(0, 50) / 10)];
+                        if (Choice == 'A') a = true;
+                        Line.Add(Choice);
+                    }
+                    else
+                    {
+                        char Choice = possiblechar[r.Next(0, 3)];
+                        Line.Add(Choice);
+                    }
+                }
+
+                if (x < map.Count - 1)
+                    map[x] = String.Join(' ', Line.ToArray());
+                else
+                    map.Add(String.Join(' ', Line.ToArray()));
+            }
+
+            while (map.Count > Size)
+            {
+                map.RemoveAt(map.Count - 1);
+            }
+
             Vector Start = new Vector(map[map.FindIndex(x => x.Contains("A"))].IndexOf("A"), map.FindIndex(x => x.Contains("A"))); //Finds start in map
             Vector Goal = new Vector(map[map.FindIndex(x => x.Contains("B"))].IndexOf("B"), map.FindIndex(x => x.Contains("B")));  //Finds goal in map
 
-            Node StartNode = new Node(Start.x, Start.y, true); //Sets start and goal Nodes using vectors above
+            Node StartNode = new Node(Start.x, Start.y, true);     //Sets start and goal Nodes using vectors above
             Node GoalNode = new Node(Goal.x, Goal.y, false, true);
 
             StartNode.SetDistance(GoalNode); //Sets initial distance
@@ -95,7 +165,7 @@ namespace A_Star
 
                 var CheckNode = OpenNodes.OrderBy(Node => Node.CostDistanceScore).First(); //Get Next node to check based on distance score
 
-                if(CheckNode.Current.x == GoalNode.Current.x && CheckNode.Current.y == GoalNode.Current.y) //Scheck if it is goal node
+                if(CheckNode.Current.x == GoalNode.Current.x && CheckNode.Current.y == GoalNode.Current.y) //Check if it is goal node
                 {
                     Console.WriteLine("We are at our destination");
 
@@ -118,8 +188,10 @@ namespace A_Star
                         if(Node == null)
                         {
                             Console.WriteLine("Path Found:");
-                            map.ForEach(Line => Console.WriteLine(Line));
+                            DrawColouredMap(map);
+                            DateTime End = DateTime.Now;
                             Console.WriteLine("Done");
+                            Console.WriteLine("Simulation Of Grid Size {0} Took {1} Seconds With Visualisation {2}", Size, End - Initial, Visual ? "On" : "Off");
                             Console.ReadLine();
                             return;
                         }
@@ -131,7 +203,7 @@ namespace A_Star
                 VisitedNodes.Add(CheckNode); //Adds node to visited
                 OpenNodes.Remove(CheckNode); //Removes from needs top be checked
 
-                DrawCurrentChecked(map, VisitedNodes);  //Visualises map in console
+                if(Visual) DrawCurrentChecked(map, VisitedNodes, OpenNodes);  //Visualises map in console
 
                 var NextNodes = GetNeigbourNodes(map, CheckNode, GoalNode); //Gets Neighbour nodes
 
@@ -195,7 +267,7 @@ namespace A_Star
             PossibleNodes.ForEach(Node => Node.SetDistance(TargetNode)); //Sets distance for each node in list
             PossibleNodes.ForEach(Node => Node.CostScore = CurrentNode.CostScore + 1); //Sets CostScore for all nodes
 
-            var maxX = map.First().Length - 1;  //Finds bounds of map 
+            var maxX = map.Count - 1;//(map[0].Length - 1);  //Finds bounds of map 
             var maxY = map.Count - 1;
 
             return PossibleNodes
@@ -206,7 +278,7 @@ namespace A_Star
 
         }
 
-        static void DrawCurrentChecked(List<string> map, List<Node> Checked)
+        static void DrawCurrentChecked(List<string> map, List<Node> Checked, List<Node> OpenNodes)
         {
             Console.Clear();
             List<string> CheckedMap = new List<string>();
@@ -219,12 +291,57 @@ namespace A_Star
             foreach (var Node in Checked)
             {
                 var newMapRow = CheckedMap[Node.Current.y].ToCharArray();
-                newMapRow[Node.Current.x] = 'X';
+
+                if(newMapRow[Node.Current.x] != 'A') newMapRow[Node.Current.x] = 'X';
+                //if(newMapRow[Node.Current.x] != 'A' && !OpenNodes.Any(Node2 => Node2.Current.x == Node.Current.x && Node2.Current.y == Node.Current.y)) newMapRow[Node.Current.x] = 'K';
+                else newMapRow[Node.Current.x] = 'A';
                 CheckedMap[Node.Current.y] = new string(newMapRow);
             }
 
-            CheckedMap.ForEach(Line => Console.WriteLine(Line));
+            DrawColouredMap(CheckedMap);
             Thread.Sleep(5);
+        }
+
+        static void DrawColouredMap(List<string> map)
+        {
+
+            var DefautColour = Console.BackgroundColor;
+
+            foreach(var Line in map)
+            {
+                foreach (var Char in Line)
+                {
+                    switch (Char)
+                    {
+                        case 'B':
+                            Console.BackgroundColor = ConsoleColor.DarkMagenta;
+                            Console.Write(' ');
+                            break;
+                        case ' ':
+                            Console.BackgroundColor = DefautColour;
+                            Console.Write(' ');
+                            break;
+                        case 'X':
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Write(' ');
+                            break;
+                        case 'K':
+                            Console.BackgroundColor = ConsoleColor.Magenta;
+                            Console.Write(' ');
+                            break;
+                        case '*':
+                            Console.BackgroundColor = ConsoleColor.Green;
+                            Console.Write(' ');
+                            break;
+                        case '|':
+                            Console.BackgroundColor = ConsoleColor.DarkCyan;
+                            Console.Write(' ');
+                            break;
+                    }
+                }
+                Console.WriteLine();
+            }
+            Console.BackgroundColor = DefautColour;
         }
 
     }
