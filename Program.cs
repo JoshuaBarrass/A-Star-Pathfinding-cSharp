@@ -106,7 +106,7 @@ namespace A_Star
             }
             */
 
-            int Size = r.Next(5, 30);
+            int Size = r.Next(25, 30);
             bool a = false;
             bool b = false;
             char[] possiblechar = new char[5] { ' ', '|', ' ', '|', 'A' };
@@ -114,7 +114,7 @@ namespace A_Star
 
             for (int x = 0; x < Size; x++)
             {
-                List<char> Line = new List<char>();
+                List<char> Line = new List<char>(); //Issue here where line 6 on map doesnt write correctly and isnt the correct size
                 for (int y = 0; y < Size; y++)
                 {
                     if (a && !b && x > Size /2)
@@ -267,14 +267,21 @@ namespace A_Star
             PossibleNodes.ForEach(Node => Node.SetDistance(TargetNode)); //Sets distance for each node in list
             PossibleNodes.ForEach(Node => Node.CostScore = CurrentNode.CostScore + 1); //Sets CostScore for all nodes
 
-            var maxX = map.Count - 1;//(map[0].Length - 1);  //Finds bounds of map 
+            var maxX = map.Count - 1 ;//(map[0].Length - 1);  //Finds bounds of map 
             var maxY = map.Count - 1;
 
-            return PossibleNodes
-                .Where(Node => Node.Current.x >= 0 && Node.Current.x <= maxX)
-                .Where(Node => Node.Current.y >= 0 && Node.Current.y <= maxY) //Checks Tiles Are Within Bounds
-                .Where(Node => map[Node.Current.y][Node.Current.x] == ' ' || map[Node.Current.y][Node.Current.x] == 'B') // Checks Tiles Are spaces or the goal
-                .ToList();
+            List<Node> ValidNodes = new List<Node>();
+
+            foreach (var item in PossibleNodes)
+            {
+                if((0 <= item.Current.x && item.Current.x < maxX)) if((0 <= item.Current.y && item.Current.y < maxY))
+                {
+                    if (map[item.Current.y][item.Current.x] == ' ' || map[item.Current.y][item.Current.x] == 'A' || map[item.Current.y][item.Current.x] == 'B')
+                        ValidNodes.Add(item);
+                }
+            }
+
+            return ValidNodes;
 
         }
 
