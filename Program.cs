@@ -66,194 +66,182 @@ namespace A_Star
 
         static void Main(string[] args)
         {
-            Random r = new Random();
-
-            bool Visual;
-
-            List<string> map = new List<string>
+            while (true)
             {
-                "A     |   |         ",
-                "      | | |    B    ",
-                "--- --| | |         ",
-                "      | | |         ",
-                "----- | | |         ",
-                "      | | |         ",
-                "        |           "
-            };
+                Random r = new Random();
+                bool Visual;
 
-            Console.Write("Enable Visualisation? (true or false) :> ");
-            Visual = bool.Parse(Console.ReadLine());
+                int mapMin, mapMax;
+                Console.Write("Map Minimum Size :>"); mapMin = int.Parse(Console.ReadLine());
+                Console.Write("Map Maximum Size :>"); mapMax = int.Parse(Console.ReadLine());
 
-            DateTime Initial = DateTime.Now;
+                List<string> map = new List<string>();
 
-            /*
-            Console.Write("Map Height :> "); int MapHeight = int.Parse(Console.ReadLine());
-            Console.WriteLine("Map Must have An A (Start) on a Row And a B (Goal) on Another, \na Blank Space is fine and anything else will be taken as a wall,");
-            Console.WriteLine("Every Row MUST be the same length");
+                Console.Write("Enable Visualisation? (true or false) :> ");
+                Visual = bool.Parse(Console.ReadLine());
 
-            for (int i = 0; i < MapHeight; i++)
-            {
-                Console.Write($"Row {i + 1} :> ");
-                if (i < map.Count - 1)
-                    map[i] = Console.ReadLine();
-                else
-                    map.Add(Console.ReadLine());
-            }
+                DateTime Initial = DateTime.Now;
 
-            while (map.Count > MapHeight)
-            {
-                map.RemoveAt(map.Count - 1);
-            }
-            */
+                /*
+                Console.Write("Map Height :> "); int MapHeight = int.Parse(Console.ReadLine());
+                Console.WriteLine("Map Must have An A (Start) on a Row And a B (Goal) on Another, \na Blank Space is fine and anything else will be taken as a wall,");
+                Console.WriteLine("Every Row MUST be the same length");
 
-            int Size = r.Next(25, 30);
-            bool a = false;
-            bool b = false;
-            char[] possiblechar = new char[5] { ' ', '|', ' ', '|', 'A' };
-            char[] possiblecharB = new char[5] { ' ', '|', ' ', '|',  'B' };
-
-            for (int x = 0; x < Size; x++)
-            {
-                List<char> Line = new List<char>(); //Issue here where line 6 on map doesnt write correctly and isnt the correct size
-                for (int y = 0; y < Size; y++)
+                for (int i = 0; i < MapHeight; i++)
                 {
-                    if (a && !b && x > Size /2)
-                    {
-                        char Choice = possiblecharB[Math.Abs(r.Next(0, 50)/10)];
-                        if (Choice == 'B') b = true;
-                        Line.Add(Choice);
-
-                    }
-                    else if (!a)
-                    {
-                        char Choice = possiblechar[Math.Abs(r.Next(0, 50) / 10)];
-                        if (Choice == 'A') a = true;
-                        Line.Add(Choice);
-                    }
+                    Console.Write($"Row {i + 1} :> ");
+                    if (i < map.Count - 1)
+                        map[i] = Console.ReadLine();
                     else
-                    {
-                        char Choice = possiblechar[r.Next(0, 3)];
-                        Line.Add(Choice);
-                    }
+                        map.Add(Console.ReadLine());
                 }
 
-                if (x < map.Count - 1)
-                    map[x] = String.Join(' ', Line.ToArray());
-                else
-                    map.Add(String.Join(' ', Line.ToArray()));
-            }
-
-            while (map.Count > Size)
-            {
-                map.RemoveAt(map.Count - 1);
-            }
-
-            Vector Start = new Vector(map[map.FindIndex(x => x.Contains("A"))].IndexOf("A"), map.FindIndex(x => x.Contains("A"))); //Finds start in map
-            Vector Goal = new Vector(map[map.FindIndex(x => x.Contains("B"))].IndexOf("B"), map.FindIndex(x => x.Contains("B")));  //Finds goal in map
-
-            Node StartNode = new Node(Start.x, Start.y, true);     //Sets start and goal Nodes using vectors above
-            Node GoalNode = new Node(Goal.x, Goal.y, false, true);
-
-            StartNode.SetDistance(GoalNode); //Sets initial distance
-
-            List<Node> OpenNodes = new List<Node>();
-            OpenNodes.Add(StartNode);                   //Adds start node to open list
-            List<Node> VisitedNodes = new List<Node>();
-
-            while (OpenNodes.Any()) //Runs while there are any items in List Opennodes
-            {
-
-                var CheckNode = OpenNodes.OrderBy(Node => Node.CostDistanceScore).First(); //Get Next node to check based on distance score
-
-                if(CheckNode.Current.x == GoalNode.Current.x && CheckNode.Current.y == GoalNode.Current.y) //Check if it is goal node
+                while (map.Count > MapHeight)
                 {
-                    Console.WriteLine("We are at our destination");
-
-                    //Loop and draw map and tiles
-
-                    var Node = CheckNode;
-                    Console.WriteLine("Retracing Steps");
-                    while (true)
-                    {
-                        Console.WriteLine($"{Node.Current.x} : {Node.Current.y}");
-                        if(map[Node.Current.y][Node.Current.x] == ' ' || map[Node.Current.y][Node.Current.x] == 'X') //Plan to show Path and checked here
-                        {
-
-                            var newMapRow = map[Node.Current.y].ToCharArray();
-                            newMapRow[Node.Current.x] = '*';
-                            map[Node.Current.y] = new string(newMapRow);
-
-                        }
-                        Node = Node.Previous;
-                        if(Node == null)
-                        {
-                            Console.WriteLine("Path Found:");
-                            DrawColouredMap(map);
-                            DateTime End = DateTime.Now;
-                            Console.WriteLine("Done");
-                            Console.WriteLine("Simulation Of Grid Size {0} Took {1} Seconds With Visualisation {2}", Size, End - Initial, Visual ? "On" : "Off");
-                            Console.ReadLine();
-                            return;
-                        }
-                    }
-
-                    return; //End
+                    map.RemoveAt(map.Count - 1);
                 }
+                */
 
-                VisitedNodes.Add(CheckNode); //Adds node to visited
-                OpenNodes.Remove(CheckNode); //Removes from needs top be checked
+                int Size = r.Next(mapMin, mapMax);
+                char[] possiblechar = new char[6] { ' ', '|', '|', '|', ' ', '|', };
 
-                if(Visual) DrawCurrentChecked(map, VisitedNodes, OpenNodes);  //Visualises map in console
+                int Ax = r.Next(0, Size/ 4), Ay = r.Next(0, Size/4);
+                int Bx = r.Next(Size - Size/2, Size), By = r.Next(Size - Size / 2, Size);
 
-                var NextNodes = GetNeigbourNodes(map, CheckNode, GoalNode); //Gets Neighbour nodes
-
-                foreach (var NeighbourNode in NextNodes)
+                for (int x = 0; x < Size; x++)
                 {
-                    if(VisitedNodes.Any(Node => Node.Current.x == NeighbourNode.Current.x && Node.Current.y == NeighbourNode.Current.y)) //Sees if any node in visited is the one were on now, if so we dont want ot do it again
+                    List<char> Line = new List<char>();
+                    for (int y = 0; y < Size; y++)
                     {
-                        continue;
-                    }
-
-                    if(OpenNodes.Any(Node => Node.Current.x == NeighbourNode.Current.x && Node.Current.y == NeighbourNode.Current.y)) //sees if node is open but not visited
-                    {
-                        var ExistingNode = OpenNodes.First(Node => Node.Current.x == NeighbourNode.Current.x && Node.Current.y == NeighbourNode.Current.y); //Gets first node we've been to 
-
-                        if(ExistingNode.CostDistanceScore > CheckNode.CostDistanceScore)
+                        if (x == Ax && y == Ay)
+                            Line.Add('A');
+                        else if (x == Bx && y == By)
+                            Line.Add('B');
+                        else if (r.Next(0, 11) % 3 == 0)
                         {
-                            OpenNodes.Remove(ExistingNode);
-                            VisitedNodes.Add(NeighbourNode);
+                            char Choice = possiblechar[r.Next(0, 6)];
+                            Line.Add(Choice);
+                        }
+                        else {
+                            Line.Add(' ');
                         }
 
+
                     }
+
+                    if (x < map.Count - 1)
+                        map[x] = String.Join(' ', Line.ToArray());
                     else
+                        map.Add(String.Join(' ', Line.ToArray()));
+                }
+
+                Vector Start = new Vector(map[map.FindIndex(x => x.Contains("A"))].IndexOf("A"), map.FindIndex(x => x.Contains("A"))); //Finds start in map
+                Vector Goal = new Vector(map[map.FindIndex(x => x.Contains("B"))].IndexOf("B"), map.FindIndex(x => x.Contains("B")));  //Finds goal in map
+
+                Node StartNode = new Node(Start.x, Start.y, true);     //Sets start and goal Nodes using vectors above
+                Node GoalNode = new Node(Goal.x, Goal.y, false, true);
+
+                StartNode.SetDistance(GoalNode); //Sets initial distance
+
+                List<Node> OpenNodes = new List<Node>();
+                OpenNodes.Add(StartNode);                   //Adds start node to open list
+                List<Node> VisitedNodes = new List<Node>();
+
+                while (OpenNodes.Any()) //Runs while there are any items in List Opennodes
+                {
+
+                    var CheckNode = OpenNodes.OrderBy(Node => Node.CostDistanceScore).First(); //Get Next node to check based on distance score
+
+                    if (CheckNode.Current.x == GoalNode.Current.x && CheckNode.Current.y == GoalNode.Current.y) //Check if it is goal node
                     {
-                        OpenNodes.Add(NeighbourNode);
+                        DateTime End = DateTime.Now;
+                        Console.WriteLine("We are at our destination");
+
+                        //Loop and draw map and tiles
+
+                        var Node = CheckNode;
+                        Console.WriteLine("Retracing Steps");
+                        while (true)
+                        {
+                            Console.WriteLine($"{Node.Current.x} : {Node.Current.y}");
+                            if (map[Node.Current.y][Node.Current.x] == ' ' || map[Node.Current.y][Node.Current.x] == 'X') //Plan to show Path and checked here
+                            {
+
+                                var newMapRow = map[Node.Current.y].ToCharArray();
+                                newMapRow[Node.Current.x] = '*';
+                                map[Node.Current.y] = new string(newMapRow);
+
+                            }
+                            Node = Node.Previous;
+                            if (Node == null)
+                            {
+                                Console.WriteLine("Path Found:");
+                                DrawCurrentChecked(map, VisitedNodes, OpenNodes, true);
+                               
+                                Console.WriteLine("Done");
+                                Console.WriteLine("Simulation Of Grid Size {0} Took {1} Seconds With Visualisation {2}", Size, End - Initial, Visual ? "On" : "Off");
+                                Console.ReadLine();
+                                return;
+                            }
+                        }
+
+                       
+                    }
+
+                    VisitedNodes.Add(CheckNode); //Adds node to visited
+                    OpenNodes.Remove(CheckNode); //Removes from needs top be checked
+
+                    if (Visual) DrawCurrentChecked(map, VisitedNodes, OpenNodes);  //Visualises map in console
+
+                    var NextNodes = GetNeigbourNodes(map, CheckNode, GoalNode, Size); //Gets Neighbour nodes
+
+                    foreach (var NeighbourNode in NextNodes)
+                    {
+                        if (VisitedNodes.Any(Node => Node.Current.x == NeighbourNode.Current.x && Node.Current.y == NeighbourNode.Current.y)) //Sees if any node in visited is the one were on now, if so we dont want ot do it again
+                        {
+                            continue;
+                        }
+
+                        if (OpenNodes.Any(Node => Node.Current.x == NeighbourNode.Current.x && Node.Current.y == NeighbourNode.Current.y)) //sees if node is open but not visited
+                        {
+                            var ExistingNode = OpenNodes.First(Node => Node.Current.x == NeighbourNode.Current.x && Node.Current.y == NeighbourNode.Current.y); //Gets first node we've been to 
+
+                            if (ExistingNode.CostDistanceScore > CheckNode.CostDistanceScore)
+                            {
+                                OpenNodes.Remove(ExistingNode);
+                                VisitedNodes.Add(NeighbourNode);
+                            }
+
+                        }
+                        else
+                        {
+                            OpenNodes.Add(NeighbourNode);
+                        }
+                    }
+
+                }
+
+                Console.WriteLine("No Path Found!");
+
+                foreach (var Node in VisitedNodes)
+                {
+                    if (map[Node.Current.y][Node.Current.x] == ' ')
+                    {
+
+                        var newMapRow = map[Node.Current.y].ToCharArray();
+                        newMapRow[Node.Current.x] = 'X';
+                        map[Node.Current.y] = new string(newMapRow);
                     }
                 }
 
+                map.ForEach(Line => Console.WriteLine(Line));
+                Console.WriteLine("Done, Failed");
+                Console.ReadLine();
+
             }
-
-            Console.WriteLine("No Path Found!");
-
-            foreach (var Node in VisitedNodes)
-            {
-                if (map[Node.Current.y][Node.Current.x] == ' ')
-                {
-
-                    var newMapRow = map[Node.Current.y].ToCharArray();
-                    newMapRow[Node.Current.x] = 'X';
-                    map[Node.Current.y] = new string(newMapRow);
-                }
-            }
-
-            map.ForEach(Line => Console.WriteLine(Line));
-            Console.WriteLine("Done, Failed");
-            Console.ReadLine();
-
-
         }
 
-        private static List<Node> GetNeigbourNodes(List<string> map, Node CurrentNode, Node TargetNode)
+        private static List<Node> GetNeigbourNodes(List<string> map, Node CurrentNode, Node TargetNode, int max)
         {
 
             List<Node> PossibleNodes = new List<Node>()
@@ -267,14 +255,11 @@ namespace A_Star
             PossibleNodes.ForEach(Node => Node.SetDistance(TargetNode)); //Sets distance for each node in list
             PossibleNodes.ForEach(Node => Node.CostScore = CurrentNode.CostScore + 1); //Sets CostScore for all nodes
 
-            var maxX = map.Count - 1 ;//(map[0].Length - 1);  //Finds bounds of map 
-            var maxY = map.Count - 1;
-
             List<Node> ValidNodes = new List<Node>();
 
             foreach (var item in PossibleNodes)
             {
-                if((0 <= item.Current.x && item.Current.x < maxX)) if((0 <= item.Current.y && item.Current.y < maxY))
+                if((0 <= item.Current.x && item.Current.x < max*2-1)) if((0 <= item.Current.y && item.Current.y < max))
                 {
                     if (map[item.Current.y][item.Current.x] == ' ' || map[item.Current.y][item.Current.x] == 'A' || map[item.Current.y][item.Current.x] == 'B')
                         ValidNodes.Add(item);
@@ -285,7 +270,7 @@ namespace A_Star
 
         }
 
-        static void DrawCurrentChecked(List<string> map, List<Node> Checked, List<Node> OpenNodes)
+        static void DrawCurrentChecked(List<string> map, List<Node> Checked, List<Node> OpenNodes, bool finished = false)
         {
             Console.Clear();
             List<string> CheckedMap = new List<string>();
@@ -305,8 +290,28 @@ namespace A_Star
                 CheckedMap[Node.Current.y] = new string(newMapRow);
             }
 
+            if (finished)
+            {
+
+                var Node = OpenNodes.OrderBy(Node => Node.CostDistanceScore).First();
+
+                do
+                {
+                    if (CheckedMap[Node.Current.y][Node.Current.x] == ' ' || CheckedMap[Node.Current.y][Node.Current.x] == 'X') //Plan to show Path and checked here
+                    {
+
+                        var newMapRow = CheckedMap[Node.Current.y].ToCharArray();
+                        newMapRow[Node.Current.x] = '*';
+                        CheckedMap[Node.Current.y] = new string(newMapRow);
+
+                    }
+                    Node = Node.Previous;
+
+                } while (Node != null);
+            }
+
             DrawColouredMap(CheckedMap);
-            Thread.Sleep(5);
+            Thread.Sleep(1);
         }
 
         static void DrawColouredMap(List<string> map)
@@ -320,6 +325,10 @@ namespace A_Star
                 {
                     switch (Char)
                     {
+                        case 'A':
+                            Console.BackgroundColor = ConsoleColor.White;
+                            Console.Write(' ');
+                            break;
                         case 'B':
                             Console.BackgroundColor = ConsoleColor.DarkMagenta;
                             Console.Write(' ');
